@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+        <form id="form" method="POST">
+            {% csrf_token %}
+            {% for input in form %}
+                <div class="col s12 input-field">
+                        <label for="{{ input.name }}">{{ input.label }}</label>
+                        {{ input }}
+                </div>
+            {% endfor %}
+            <textarea id="html" name="html">
+
+            </textarea>
+            <input type="submit" value="{% trans 'Save' %}">
+        </form>
+
+{% endblock %}
+{% block specific-js %}
+        <script src="http://cdn.ckeditor.com/4.5.6/full/ckeditor.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function()
+            {
+                CKEDITOR.replace( 'html' );
+                CKEDITOR.instances.html.setData($('#id_description').val());
+            });
+
+            $('#form').submit(function(e)
+            {
+                e.preventDefault();
+                var data = CKEDITOR.instances.html.getData();
+                console.log(data);
+                $('#id_description').val(data);
+                this.submit();
+
+            });
+
+        </script>
+{% endblock %}
