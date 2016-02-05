@@ -1,9 +1,14 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% load staticfiles %}
 {% block content %}
         <form id="form" method="POST">
             {% csrf_token %}
+
             {% for input in form %}
+                {% if input.errors %}
+                    {{ input.errors }}
+                {% endif %}
                 <div class="col s12 input-field">
                         <label for="{{ input.name }}">{{ input.label }}</label>
                         {{ input }}
@@ -17,11 +22,12 @@
 
 {% endblock %}
 {% block specific-js %}
-        <script src="http://cdn.ckeditor.com/4.5.6/full/ckeditor.js"></script>
+        <script src="{% static 'static_html_engine/ckeditor/ckeditor.js' %}"></script>
 
         <script type="text/javascript">
             $(document).ready(function()
             {
+                $('#html').val($('#id_description').val());
                 CKEDITOR.replace( 'html' );
             });
 

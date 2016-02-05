@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block content %}
+        <form id="form" method="POST">
+            {% csrf_token %}
+            {% for input in form %}
+                {% if input.errors %}
+                    {{ input.errors }}
+                {% endif %}
+                {% if input.name == 'markdown' %}
+                <div class="row wmd-panel">
+                <div id="wmd-button-bar-markdown"></div>
+                    <div class="col s6 input-field">
+                        <label for="{{ input.name }}">{{ input.label }}</label>
+                        {{ input }}
+                    </div>
+                    <div class="col s6 wmd-panel wmd-preview" id="wmd-preview-markdown">
+
+                    </div>
+                </div>
+                {% else %}
+                    <div class="col s12 input-field">
+                            <label for="{{ input.name }}">{{ input.label }}</label>
+                            {{ input }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <input type="submit" value="{% trans 'Save' %}">
+        </form>
+
+{% endblock %}
+{% block specific-js %}
+    <script type="text/javascript" src="{% static 'static_html_engine/pagedown-extra/pagedown/Markdown.Converter.js' %}"></script>
+    <script type="text/javascript" src="{% static 'static_html_engine/pagedown-extra/pagedown/Markdown.Sanitizer.js' %}"></script>
+    <script type="text/javascript" src="{% static 'static_html_engine/pagedown-extra/pagedown/Markdown.Editor.js' %}"></script>
+
+    <script type="text/javascript" src="{% static 'static_html_engine/pagedown-extra/demo/prettify.js' %}"></script>
+    <script type="text/javascript" src="{% static 'static_html_engine/pagedown-extra/Markdown.Extra.js' %}"></script>
+
+
+
+        <script type="text/javascript">
+            $(document).ready(function()
+            {
+                (function () {
+
+                var converter1 = Markdown.getSanitizingConverter();
+                Markdown.Extra.init(converter1, {
+                  extensions: "all",
+                  highlighter: "prettify"
+                });
+
+                var editor1 = new Markdown.Editor(converter1,"-markdown");
+                editor1.hooks.chain("onPreviewRefresh", prettyPrint); // google code prettify
+                editor1.run();
+
+            })();
+            });
+
+            $('#form').submit(function(e)
+            {
+                console.log("Preventing upload");
+                e.preventDefault();
+                var form = this;
+                $('#id_description').val($('#wmd-preview-markdown').html());
+                form.submit();
+
+            });
+
+        </script>
+{% endblock %}

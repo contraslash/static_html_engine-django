@@ -13,6 +13,7 @@ class StaticHtml(base_models.FullBaseModel):
 
     url = models.TextField()
     user = models.ForeignKey(auth_models.User)
+    markdown = models.TextField(default="")
 
     def __unicode__(self):
         return self.url

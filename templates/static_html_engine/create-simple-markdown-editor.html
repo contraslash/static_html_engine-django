@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block specific-css %}
+    <link rel="stylesheet" href="{% static "static_html_engine/simplemde-markdown-editor/dist/simplemde.min.css" %}"/>
+{% endblock %}
+{% block content %}
+        <form id="form" method="POST">
+            {% csrf_token %}
+            {% for input in form %}
+                {% if input.errors %}
+                    {{ input.errors }}
+                {% endif %}
+                {% if input.name == 'markdown' %}
+                <div class="row wmd-panel" style="display: none;">
+                <div id="wmd-button-bar-markdown"></div>
+                    <div class="col s6 input-field">
+                        <label for="{{ input.name }}">{{ input.label }}</label>
+                        {{ input }}
+                    </div>
+                    <div class="col s6 wmd-panel wmd-preview" id="wmd-preview-markdown">
+
+                    </div>
+                </div>
+                {% else %}
+                    <div class="col s12 input-field">
+                            <label for="{{ input.name }}">{{ input.label }}</label>
+                            {{ input }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <textarea id="html" style="display: none;">
+
+            </textarea>
+            <input type="submit" value="{% trans 'Save' %}">
+        </form>
+
+{% endblock %}
+{% block specific-js %}
+    <script type="text/javascript" src="{% static 'static_html_engine/simplemde-markdown-editor/dist/simplemde.min.js' %}"></script>
+
+
+
+        <script type="text/javascript">
+
+            var simplemde;
+            $(document).ready(function()
+            {
+                simplemde = new SimpleMDE(
+                        {
+                            element: $("#html")[0],
+                            spellChecker: false
+                        }
+                );
+                simplemde.value($("#wmd-input-markdown").val());
+
+            });
+
+
+
+            $('#form').submit(function(e)
+            {
+                console.log(simplemde.value());
+                console.log("Preventing upload");
+                e.preventDefault();
+                var form = this;
+                $("#markdown").val(simplemde.value());
+                $('#id_description').val(simplemde.markdown(simplemde.value()));
+{#                $('#id_description').val("BLA BLA BLA");#}
+                form.submit();
+
+            });
+
+        </script>
+{% endblock %}

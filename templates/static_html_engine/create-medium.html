@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% block specific-css %}
+    <link rel="stylesheet" href="{% static 'static_html_engine/medium-editor/dist/css/medium-editor.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'static_html_engine/medium-editor/dist/css/themes/default.css' %}"/>
+{% endblock %}
+{% block content %}
+        <form id="form" method="POST">
+            {% csrf_token %}
+
+            {% for input in form %}
+                {% if input.errors %}
+                    {{ input.errors }}
+                {% endif %}
+                <div class="col s12 input-field">
+                        <label for="{{ input.name }}">{{ input.label }}</label>
+                        {{ input }}
+                </div>
+            {% endfor %}
+            <textarea id="html" class="editable" name="html">
+
+            </textarea>
+            <input type="submit" value="{% trans 'Save' %}">
+        </form>
+
+{% endblock %}
+{% block specific-js %}
+        <script src="{% static 'static_html_engine/medium-editor/dist/js/medium-editor.min.js' %}"></script>
+
+        <script type="text/javascript">
+
+        var editor;
+            $(document).ready(function()
+            {
+                $('#html').val($('#id_description').val());
+                editor = new MediumEditor('.editable');
+            });
+
+            $('#form').submit(function(e)
+            {
+                e.preventDefault();
+                var data = $('#html').val();
+                console.log(data);
+                $('#id_description').val(data);
+                this.submit();
+
+            });
+
+        </script>
+{% endblock %}
