@@ -1,6 +1,6 @@
-from static_html_engine import conf as static_html_conf
+from clubguiasfarallones import conf as static_html_conf
 
-NAMESPACE = static_html_conf.STATIC_HTML_NAMESPACE
+NAMESPACE = static_html_conf.STATIC_HTML_ENGINE_NAMESPACE
 
 CREATE_HTML_URL_NAME = "static_html_create"
 DETAIL_HTML_URL_NAME = "static_html_detail"

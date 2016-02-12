@@ -3,6 +3,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django import http
 from django.core.urlresolvers import reverse_lazy
+from django.template.loader import get_template
 
 from base import views as base_views
 
@@ -16,7 +17,10 @@ class Create(base_views.BaseCreateView):
 
     @method_decorator(login_required(login_url='log_in'))
     def dispatch(self, request, *args, **kwargs):
-        return super(Create, self).dispatch(request, *args, **kwargs)
+        if self.request.user.has_perm("static_html_engine.add_statichtml"):
+            return super(Create, self).dispatch(request, *args, **kwargs)
+        else:
+            return http.HttpResponseForbidden(get_template("403.html").render())
 
     def get_template_names(self):
         self.editor = self.request.GET.get('editor', '')
@@ -70,6 +74,13 @@ class Detail(base_views.BaseDetailView):
 class Update(base_views.BaseUpdateView):
     editor = ''
     model = static_html_models.StaticHtml
+
+    @method_decorator(login_required(login_url='log_in'))
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.user.has_perm("static_html_engine.update_statichtml"):
+            return super(Update, self).dispatch(request, *args, **kwargs)
+        else:
+            return http.HttpResponseForbidden(get_template("403.html").render())
 
     def get_template_names(self):
         self.editor = self.request.GET.get('editor', '')
