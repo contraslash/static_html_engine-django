@@ -14,12 +14,12 @@ urlpatterns = [
         name=conf.CREATE_HTML_URL_NAME
     ),
     url(
-        r'^(?P<pk>\d+)/$',
+        r'^(?P<slug>[\w-]+)/$',
         views.Detail.as_view(),
         name=conf.DETAIL_HTML_URL_NAME
     ),
     url(
-        r'^(?P<pk>\d+)/edit/$',
+        r'^(?P<slug>[\w-]+)/edit/$',
         views.Update.as_view(),
         name=conf.EDIT_HTML_URL_NAME
     ),

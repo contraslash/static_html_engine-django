@@ -52,7 +52,7 @@ class Create(base_views.BaseCreateView):
         static_page.save()
         return http.HttpResponseRedirect(reverse_lazy(
             static_page.url_name, kwargs={
-                'pk': static_page.id
+                'slug': static_page.url
             }
         ))
 
@@ -69,6 +69,9 @@ class List(base_views.BasePaginationListView):
 class Detail(base_views.BaseDetailView):
     template_name = "static_html_engine/detail.html"
     model = static_html_models.StaticHtml
+
+    def get_slug_field(self):
+        return "url"
 
 
 class Update(base_views.BaseUpdateView):
